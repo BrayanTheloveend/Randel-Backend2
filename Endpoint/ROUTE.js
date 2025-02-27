@@ -1,5 +1,5 @@
 const express = require('express');
-const { CreateUser, getUser } = require('../Controller/User');
+const { CreateUser, getUser } = require('../Controller/USER');
 const { Login } = require('../Controller/AUTH');
 
 
