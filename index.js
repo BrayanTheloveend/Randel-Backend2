@@ -5,7 +5,7 @@ const app = express();
 const bodyParser = require('body-parser');
 const path = require('path');
 const cookieParser = require('cookie-parser');
-// const ToggleRoute = require('./Endpoints/index').router
+const ToggleRoute = require('./endpoint').router
 const mongoose = require('mongoose');
 //const corsOptions =  require('./Config/corsOptions')
 const cors = require('cors')
@@ -32,7 +32,7 @@ app.use(cookieParser());
 // app.use('/image', express.static(path.join(__dirname,'/Public/image')))
 
 // //API TOGGLE ROUTE
-// app.use('/api', ToggleRoute);
+app.use('/api', ToggleRoute);
 
 
 //PORT
