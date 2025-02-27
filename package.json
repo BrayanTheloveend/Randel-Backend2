@@ -1,10 +1,10 @@
 {
   "name": "digicode-backend",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "Index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon index.js"
+    "start": "nodemon Index.js"
   },
   "author": "",
   "license": "ISC",
