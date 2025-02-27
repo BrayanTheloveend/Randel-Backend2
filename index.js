@@ -28,8 +28,8 @@ app.use(cookieParser());
 
 
 
-// //image
-// app.use('/image', express.static(path.join(__dirname,'/Public/image')))
+//image
+app.use('/image', express.static(path.join(__dirname,'/Public/image')))
 
 // //API TOGGLE ROUTE
 app.use('/api', ToggleRoute);
