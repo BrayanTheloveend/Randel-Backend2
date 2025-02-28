@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt')
 const multer = require('multer')
 const nodemailer = require('nodemailer');
 const { uploadFile } = require('../Googlecloud/DRIVE');
+require('dotenv').config()
 // const emailOptions = require('../handlebars')
 // const jwt = require('../Middleware/JWT')
 
@@ -62,6 +63,7 @@ module.exports = {
 
                 if(found){ res.status(409).json({ 'message': 'Adresse email déjà utilisé' })}
                 else{
+
                     await uploadFile(file, process.env.FOLDER_USER_IMAGE)
                     .then(data =>{
                         bcrypt.hash(password, 8, (err, bcryptedPassword)=>{
