@@ -6,7 +6,7 @@ require('dotenv').config()
 
 // If modifying these scopes, delete token.json.
 const SCOPES = ['https://www.googleapis.com/auth/drive'];
-const KEYFILEPATH = path.join(process.cwd(), '/Middleware/CREDENTIALS2.json');
+const KEYFILEPATH = path.join(process.cwd(), '/Middleware/CREDENTIALS.json');
 
 
 const auth = new google.auth.GoogleAuth({
