@@ -38,9 +38,6 @@ app.use(cookieParser());
 app.use('/api', ToggleRoute);
 
 
-//PORT
-const PORT = 5000;
-
 
 app.get('/', (req, res)=>{
 
@@ -53,5 +50,5 @@ mongoose.connect(process.env.DATABASE_URI)
 
 const connection = mongoose.connection;
 connection.once('open', () => {
-    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+    app.listen(process.env.PORT, () => console.log(`Server running on port ${process.env.PORT}`));
 });
