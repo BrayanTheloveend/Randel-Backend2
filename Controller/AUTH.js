@@ -1,5 +1,6 @@
 const User = require('../Model/USER');
 const bcrypt = require('bcrypt')
+const path = require('path')
 const multer = require('multer')
 const nodemailer = require('nodemailer')
 //const emailOptions = require('../handlebars')
@@ -57,6 +58,15 @@ module.exports={
             }}
         )
     
-    }
+    },
+
+    getGoogleValidation: (req, res)=>{
+        const root = path.join(__dirname, '../index.html')
+        res.setHeader("Content-type", 'text/html');
+        res.status(200).sendFile(root)
+        return res.sendFile()
+    },
+
+    
 
 }

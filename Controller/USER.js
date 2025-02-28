@@ -1,15 +1,17 @@
 const User = require('../Model/USER');
 const bcrypt = require('bcrypt')
 const multer = require('multer')
-const nodemailer = require('nodemailer')
+const nodemailer = require('nodemailer');
+const { uploadFile } = require('../Googlecloud/DRIVE');
 // const emailOptions = require('../handlebars')
 // const jwt = require('../Middleware/JWT')
+
 //Upload File
 
 let date = Date.now()
 const storage = multer.diskStorage({
     destination: (req, file, callback)=>{
-        return callback(null, "./Public/Image")
+        return callback(null, "./Public")
     },
 
     filename: (req, file, callback)=>{
@@ -56,38 +58,45 @@ module.exports = {
             if (!email || !password || !file) return res.status(400).json({ 'message': 'Username and password are required.' });
             
             // check for duplicate usernames in the db
-             User.findOne({ email: email }).then(found =>{
+             User.findOne({ email: email }).then( async found =>{
 
                 if(found){ res.status(409).json({ 'message': 'Adresse email déjà utilisé' })}
                 else{
-                    bcrypt.hash(password, 8, (err, bcryptedPassword)=>{
-                        User.create({
-                            email: email,
-                            name: name,
-                            surname: surname,
-                            statut: 1,
-                            picture: `${date}_${file.originalname}` ,
-                            password: bcryptedPassword,
+                    await uploadFile(file, process.env.FOLDER_USER_IMAGE)
+                    .then(data =>{
+                        bcrypt.hash(password, 8, (err, bcryptedPassword)=>{
+                            User.create({
+                                email: email,
+                                name: name,
+                                surname: surname,
+                                statut: 1,
+                                picture: `${data.name}_id${data.id}` ,
+                                password: bcryptedPassword,
+                            })
+                            .then(()=> res.status(201).json({"message": 'compte crée avec success '}) )
+                                
+                            //    const transport = transporter.sendMail(emailOptions(email, 'Code de Verification', OTP))
+                            //     .then(()=>{
+                            //         return res.status(200).json({
+                            //             'message': "vous avez reçu un code de verification a l'adresse e-mail ✅" + email
+                            //         })
+                            //     })
+                            //     .catch(err=>{
+                            //         return res.status(404).json({
+                            //             'message': 'verifier votre connexion internet'
+                            //         })
+                            //     })
+                                        
+                            // )
+        
+                            //DO NOT FORGET TO SEND A EMAIL TO Admin
+                            .catch(err=> res.status(500).json({'message': err}))
                         })
-                        .then(()=> res.status(201).json({"message": 'compte crée avec success '}) )
-                            
-                        //    const transport = transporter.sendMail(emailOptions(email, 'Code de Verification', OTP))
-                        //     .then(()=>{
-                        //         return res.status(200).json({
-                        //             'message': "vous avez reçu un code de verification a l'adresse e-mail ✅" + email
-                        //         })
-                        //     })
-                        //     .catch(err=>{
-                        //         return res.status(404).json({
-                        //             'message': 'verifier votre connexion internet'
-                        //         })
-                        //     })
-                                    
-                        // )
-    
-                        //DO NOT FORGET TO SEND A EMAIL TO Admin
-                        .catch(err=> res.status(500).json({'message': err}))
+
+                    }).catch(()=>{
+                        return res.status(409).json({'message': 'Network error'})
                     })
+                    
                 }
              })
             

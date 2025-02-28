@@ -6,10 +6,13 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const ToggleRoute = require('./Endpoint/ROUTE').router
+const cors = require('cors');
 const mongoose = require('mongoose');
 //const corsOptions =  require('./Config/corsOptions')
-const cors = require('cors')
 require('dotenv').config()
+
+
+//Google cloud
 
 
 
@@ -28,8 +31,8 @@ app.use(cookieParser());
 
 
 
-//image
-app.use('/image', express.static(path.join(__dirname,'/Public/image')))
+// //image
+// app.use('/image', express.static(path.join(__dirname,'/Public/image')))
 
 // //API TOGGLE ROUTE
 app.use('/api', ToggleRoute);

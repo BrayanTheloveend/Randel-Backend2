@@ -10,6 +10,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@google-cloud/local-auth": "^2.1.0",
     "async": "^3.2.6",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.3",
@@ -18,6 +19,7 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.1",
     "fs": "^0.0.1-security",
+    "googleapis": "^105.0.0",
     "handlebars": "^4.7.8",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.13.1",
@@ -26,6 +28,8 @@
     "mysql2": "^3.11.3",
     "nodemailer": "^6.10.0",
     "nodemon": "^3.1.7",
-    "path": "^0.12.7"
+    "path": "^0.12.7",
+    "process": "^0.11.10",
+    "stream": "^0.0.3"
   }
 }
