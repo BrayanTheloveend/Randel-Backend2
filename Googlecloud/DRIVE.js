@@ -15,6 +15,7 @@ const auth = new google.auth.GoogleAuth({
 });
 
 const uploadFile = (fileObject, folderId) => {
+    console.log(fileObject)
     return new Promise(async (resolve, rejected)=>{
         google.drive({ version: "v3", auth }).files.create({
             media: {
@@ -22,7 +23,7 @@ const uploadFile = (fileObject, folderId) => {
                 body: fs.createReadStream(fileObject.path),
             },
             requestBody: {
-                name: `${fileObject.originalname}_${Date.now()}`,
+                name: `${fileObject.originalname.split('.')[0]}_${Date.now()}`,
                 parents: [folderId],
             },
             fields: "id,name",

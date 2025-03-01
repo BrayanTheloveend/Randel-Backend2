@@ -64,14 +64,15 @@ module.exports = {
                 if(found){ res.status(409).json({ 'message': 'Adresse email déjà utilisé' })}
                 else{
                     await uploadFile(file, process.env.FOLDER_USER_IMAGE)
-                    .then(data =>{
+                    .then(file =>{
+                        console.log(file)
                         bcrypt.hash(password, 8, (err, bcryptedPassword)=>{
                             User.create({
                                 email: email,
                                 name: name,
                                 surname: surname,
                                 statut: 1,
-                                picture: `${data.name}_id${data.id}` ,
+                                picture: `${file.data.name}_id${file.data.id}` ,
                                 password: bcryptedPassword,
                             })
                             .then(()=> res.status(201).json({"message": 'compte crée avec success '}) )
@@ -94,8 +95,8 @@ module.exports = {
                             .catch(err=> res.status(500).json({'message': err}))
                         })
 
-                    }).catch(()=>{
-                        return res.status(409).json({'message': 'enable to connect'})
+                    }).catch(err=>{
+                        return res.status(409).json({'message': err})
                     })
                     
                 }
