@@ -63,7 +63,6 @@ module.exports = {
 
                 if(found){ res.status(409).json({ 'message': 'Adresse email déjà utilisé' })}
                 else{
-
                     await uploadFile(file, process.env.FOLDER_USER_IMAGE)
                     .then(data =>{
                         bcrypt.hash(password, 8, (err, bcryptedPassword)=>{
@@ -96,7 +95,7 @@ module.exports = {
                         })
 
                     }).catch(()=>{
-                        return res.status(409).json({'message': 'Network error'})
+                        return res.status(409).json({'message': 'enable to connect'})
                     })
                     
                 }
