@@ -19,14 +19,16 @@ require('dotenv').config()
 // app.use(credentials);
 
 // Cross Origin Resource Sharing
-// app.use(cors(corsOptions));
+app.use(cors(corsOptions));
 //Encryptment
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
 //cors & cookies
 
-app.use(cors())
+app.use(cors(
+    
+))
 app.use(cookieParser());
 
 
