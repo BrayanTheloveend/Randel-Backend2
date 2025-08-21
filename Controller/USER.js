@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt')
 const multer = require('multer')
 const nodemailer = require('nodemailer');
 const { uploadFile } = require('../Googlecloud/DRIVE');
+const CATEGORIE = require('../Model/CATEGORIE');
 require('dotenv').config()
 // const emailOptions = require('../handlebars')
 // const jwt = require('../Middleware/JWT')
@@ -53,7 +54,7 @@ module.exports = {
         file: upload.single('file'),
         
         request : async (req, res)=>{
-            const { name, surname, email, password } = req.body;
+            const { name, surname, email, password, role } = req.body;
             const file = req.file;
             //let OTP = OTPGenerator(6)
             if (!email || !password || !file) return res.status(400).json({ 'message': 'Username and password are required.' });
@@ -65,12 +66,13 @@ module.exports = {
                 else{
                     await uploadFile(file, process.env.FOLDER_USER_IMAGE)
                     .then(file =>{
-                        console.log(file)
                         bcrypt.hash(password, 8, (err, bcryptedPassword)=>{
                             User.create({
                                 email: email,
                                 name: name,
                                 surname: surname,
+                                shopName: surname,
+                                role: role,
                                 statut: 1,
                                 picture: `${file.data.name}_id${file.data.id}` ,
                                 password: bcryptedPassword,
@@ -114,6 +116,50 @@ module.exports = {
         }
         
     },
+
+    updateUser: (req, res)=>{
+        User.findOne({'_id': req.body.id})
+        .then(async (found)=>{
+            if(found){
+                User.updateOne({'_id': req.body.id},{
+                    description: req.body.description,
+                    country: req.body.country,
+                    city: req.body.city,
+                    facebook: req.body.facebook,
+                    tiktok: req.body.tiktok
+                }).then(()=> res.status(200).json({'message': 'updated'}))
+                .catch(err=> res.status(500).json({'message': err}))
+            }else{
+                res.status(404).json({'message': 'user not found'})
+            }
+        }).catch(err=> res.status(500).json({'message': err}))
+    }, 
+
+    getUserById : async (req, res)=>{
+        const userArticle = []
+        const Category = await CATEGORIE.find({})
+        User.findOne({'_id': req.params.id})
+        .then(found=>{
+            if(found){
+                console.log(Category)
+                if(Category){
+                    for (let i = 0; i < Category.length; i++) {
+                        if(Category[i].article.length > 0){
+                            for (let j = 0; j < Category[i].article.length; j++) {
+                               userArticle.push(Category[i].article[j])
+                            }
+                        }
+                    }
+                }else{
+                    return res.status(404).json({'message': 'unabled to get Article'})
+
+                }
+            return res.status(200).json({...found._doc, article: userArticle})
+            }else{
+                return res.status(404).json({'message': 'User not found'})
+            }
+        }).catch(err=> res.status(500).json({'message': err}))
+    }
 
    
 

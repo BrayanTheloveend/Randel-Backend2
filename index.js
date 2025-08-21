@@ -8,7 +8,6 @@ const cookieParser = require('cookie-parser');
 const ToggleRoute = require('./Endpoint/ROUTE').router
 const cors = require('cors');
 const mongoose = require('mongoose');
-//const corsOptions =  require('./Config/corsOptions')
 require('dotenv').config()
 
 
@@ -19,16 +18,14 @@ require('dotenv').config()
 // app.use(credentials);
 
 // Cross Origin Resource Sharing
-app.use(cors(corsOptions));
+
 //Encryptment
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
 //cors & cookies
 
-app.use(cors(
-    
-))
+app.use(cors())
 app.use(cookieParser());
 
 

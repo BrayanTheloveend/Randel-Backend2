@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema({
     },
     surname: {
         type: String,
-        required: true
+        required: false
     },
     blocked: {
         type: Boolean,
@@ -31,6 +31,17 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    description: String,
+    shopName: String,
+    account: {type: Number, default: 0},
+    solded: {type: Number, default: 0},
+    posted: {type: Number, default: 0},
+    phone: String,
+    facebook: String,
+    tiktok: String,
+    history: Array,
+    country: {type: String, default: 'Cameroun'},
+    city: {type: String, default: 'Yaoundé'},
     refreshToken: String,
 
 },{collection: 'users'});

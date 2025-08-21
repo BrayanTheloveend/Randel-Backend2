@@ -15,7 +15,6 @@ const auth = new google.auth.GoogleAuth({
 });
 
 const uploadFile = (fileObject, folderId) => {
-    console.log(fileObject)
     return new Promise(async (resolve, rejected)=>{
         google.drive({ version: "v3", auth }).files.create({
             media: {
@@ -58,6 +57,23 @@ const getUrlFile =(filename, folderId)=>{
     })
 }
 
-module.exports = { uploadFile } 
+
+const deleteFile = (id)=>{
+    return new Promise((resolve, rejected)=>{
+        google.drive({ version: "v3", auth }).files.delete({
+            fileId: id,
+        },(err)=>{
+            if(err){
+                rejected(err)
+            }else{
+                resolve()
+                console.log('File deleted from Google Drive')
+            }
+        })
+    })
+
+}
+
+module.exports = { uploadFile, deleteFile} 
 
 
