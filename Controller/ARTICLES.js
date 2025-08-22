@@ -66,7 +66,7 @@ module.exports ={
             for (let i = 0; i < data.length; i++) {
                 if(data[i].article.length > 0){
                     for (let j = 0; j < data[i].article.length; j++) {
-                        articleSet.push({...data[i].article[j], nameCategory: data[i].name})
+                        articleSet.push({...data[i].article[j], categoryName: data[i].name})
 
                     }
                 }
@@ -166,6 +166,22 @@ module.exports ={
             
         })
          .catch(err=>res.status(409).json({'message': err}))
+     },
+
+     getArticleBestseller : (req, res)=>{
+        Categorie.find({})
+        .then(data=>{            
+            let ArticleBestSeller = []
+            if(data.length !== 0){
+                for(let i = 0; i < data.length ; i++){
+                    if(data[i].article.length !== 0){
+                        // let random = Math.floor(Math.random() * (data[i].article.length))
+                        ArticleBestSeller.push({...data[i].article.at(-1), categoryName: data[i].name})
+                    }
+                }   
+            }
+            res.status(200).json(ArticleBestSeller)
+        }).catch(err=>res.status(409).json({'message': err}))
      }
 
 }

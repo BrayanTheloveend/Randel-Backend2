@@ -2,7 +2,7 @@ const express = require('express');
 const { CreateUser, getUser, getUserById, updateUser } = require('../Controller/USER');
 const { Login, getGoogleValidation } = require('../Controller/AUTH');
 const { ReadCategorie, createCategorie, UpdateCategorie, DeleteCategorie, GetCategoryById } = require('../Controller/CATEGORIE');
-const { createArticle, ListArticle, UpdateArticle, DeleteArticle, getArticleById, getArticleByUserId } = require('../Controller/ARTICLES');
+const { createArticle, ListArticle, UpdateArticle, DeleteArticle, getArticleById, getArticleByUserId, getArticleBestseller } = require('../Controller/ARTICLES');
 const { CreateHistoryResearch, ListResearchHistory } = require('../Controller/RESEARCH');
 const { createPromotion, ListPromotion } = require('../Controller/PROMOTION');
 
@@ -33,6 +33,7 @@ exports.router = (()=>{
     ToggleRouter.route('/Articles/createArticle').post(createArticle.file, createArticle.request)
     ToggleRouter.route('/Articles/ListArticle').get(ListArticle)
     ToggleRouter.route('/Articles/GetArticleById/:idCategory/:id').get(getArticleById)
+    ToggleRouter.route('/Articles/GetArticleOfEachCategory').get(getArticleBestseller)
     ToggleRouter.route('/Articles/GetArticleByUserId/:id').get(getArticleByUserId)
     ToggleRouter.route('/Articles/UpdateArticle').put(UpdateArticle.file, UpdateArticle.request)
     ToggleRouter.route('/Articles/DeleteArticle/:idCategory/:id/:idPicture').delete(DeleteArticle)

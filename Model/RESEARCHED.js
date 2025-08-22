@@ -11,4 +11,4 @@ const ResearchedSchema = new mongoose.Schema({
 
 
 },{collection: 'orders'});
-module.exports = mongoose.models.orders ||  mongoose.model('orders', ResearchedSchema);
+module.exports = mongoose.models.history ||  mongoose.model('history', ResearchedSchema);
