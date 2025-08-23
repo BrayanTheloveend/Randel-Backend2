@@ -2,20 +2,27 @@ const mongoose = require('mongoose')
 
 const PromoSchema = new mongoose.Schema({
 
-    picture: {
-        type: String,
-        required: true
-    },
     name: {
         type: String,
         required: true
     },
-    price: {
+    provider: {
         type: String,
         required: true
     },
+    owner: {
+        type: String,
+        required: true
+    },
+    description: String,
+    picture: String,
+    stock: Number,
+    price: String,
+    oldPrice: String,
+    country: String,
+    build: String,
     createdAt: Date
 
 
-},{collection: 'orders'});
-module.exports = mongoose.models.orders ||  mongoose.model('orders', PromoSchema);
+},{collection: 'promotion'});
+module.exports = mongoose.models.promotion ||  mongoose.model('promotion', PromoSchema);

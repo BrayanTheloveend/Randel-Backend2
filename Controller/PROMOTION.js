@@ -33,6 +33,9 @@ module.exports = {
                 _id: uuidv4(),
                 name: req.body.name,
                 price: req.body.price,
+                oldPrice: req.body.oldPrice,
+                description: description,
+                skill: skill,
                 picture: `${file.data.name}_id${file.data.id}`,
                 createdAt: Date.now()
 
