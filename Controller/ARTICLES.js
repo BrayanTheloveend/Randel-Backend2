@@ -148,6 +148,7 @@ module.exports ={
 
      getArticleByUserId: async(req, res)=>{
         let articleSet = []
+        if(req.params.id){
         const Owner = await USER.findOne({'_id': req.params.id})
         Categorie.find({})
          .then(data=>{
@@ -166,7 +167,11 @@ module.exports ={
             
         })
          .catch(err=>res.status(409).json({'message': err}))
-     },
+    }else{
+        return res.status(409).json({'message': 'invalide params'})
+    }
+    
+    },
 
      getArticleBestseller : (req, res)=>{
         Categorie.find({})
