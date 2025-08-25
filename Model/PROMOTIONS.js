@@ -10,10 +10,12 @@ const PromoSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    idCategory: String,
     owner: {
         type: String,
         required: true
     },
+    categoryName: String,
     description: String,
     picture: String,
     stock: Number,

@@ -15,7 +15,9 @@ module.exports = {
                 }).then(()=>res.status(200).json({'message': 'Created'}))
                 .catch(err=>res.status(409).json({'message': err}))
             }else{
-                return res.status(401).json({'message': 'data already exist'})
+                Research.updateOne({'name': req.body.name}, {$inc: {'count': 1}})
+                .then(()=>res.status(201).json({'message': 'data already exist'}))
+                .catch(err=>res.status(409).json({'message': err}))
             }
         })
         .catch(err=>res.status(409).json({'message': 'failed to fetch'}))

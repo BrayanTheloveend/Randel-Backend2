@@ -7,6 +7,7 @@ const ResearchedSchema = new mongoose.Schema({
         required: true
     },
     attachement: String,
+    count: Number,
     createAt: Date
 
 

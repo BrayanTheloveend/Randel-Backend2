@@ -4,7 +4,7 @@ const { Login, getGoogleValidation } = require('../Controller/AUTH');
 const { ReadCategorie, createCategorie, UpdateCategorie, DeleteCategorie, GetCategoryById } = require('../Controller/CATEGORIE');
 const { createArticle, ListArticle, UpdateArticle, DeleteArticle, getArticleById, getArticleByUserId, getArticleBestseller } = require('../Controller/ARTICLES');
 const { CreateHistoryResearch, ListResearchHistory } = require('../Controller/RESEARCH');
-const { createPromotion, ListPromotion } = require('../Controller/PROMOTION');
+const { createPromotion, ListPromotion, UpdatePromotion, DeletePromotion, getPromotionByUserId } = require('../Controller/PROMOTION');
 
 
 
@@ -47,6 +47,9 @@ exports.router = (()=>{
 
     ToggleRouter.route('/Promotion/createPromotion').post(createPromotion.file, createPromotion.request)
     ToggleRouter.route('/Promotion/ListPromotion').get(ListPromotion)
+    ToggleRouter.route('/Promotion/GetPromotionByUserId/:id').get(getPromotionByUserId)
+    ToggleRouter.route('/Promotion/UpdatePromotion').put(UpdatePromotion.file, UpdatePromotion.request)
+    ToggleRouter.route('/Promotion/DeletePromotion/:idCategory/:id/:idPicture').delete(DeletePromotion)
 
 
 

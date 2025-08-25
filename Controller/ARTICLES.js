@@ -66,8 +66,9 @@ module.exports ={
             for (let i = 0; i < data.length; i++) {
                 if(data[i].article.length > 0){
                     for (let j = 0; j < data[i].article.length; j++) {
+                        if(data[i].article[j].discount !== true){
                         articleSet.push({...data[i].article[j], categoryName: data[i].name})
-
+                        }
                     }
                 }
             }
@@ -156,7 +157,7 @@ module.exports ={
                 for (let i = 0; i < data.length; i++) {
                     if(data[i].article.length > 0){
                         for (let j = 0; j < data[i].article.length; j++) {
-                            if(data[i].article[j]?.owner === req.params.id){
+                            if(data[i].article[j]?.owner === req.params.id && data[i].article[j]?.discount !== true){
                                 articleSet.push({...data[i].article[j], categoryName: data[i].name})
                             }
                         }
@@ -180,8 +181,10 @@ module.exports ={
             if(data.length !== 0){
                 for(let i = 0; i < data.length ; i++){
                     if(data[i].article.length !== 0){
-                        // let random = Math.floor(Math.random() * (data[i].article.length))
-                        ArticleBestSeller.push({...data[i].article.at(-1), categoryName: data[i].name})
+                        let noPromo = data[i].article.filter(elt=> elt?.discount !== true)
+                        if(noPromo.length !== 0){
+                            ArticleBestSeller.push({...noPromo.at(-1), categoryName: data[i].name})
+                        }
                     }
                 }   
             }
