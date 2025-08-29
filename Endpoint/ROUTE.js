@@ -5,6 +5,7 @@ const { ReadCategorie, createCategorie, UpdateCategorie, DeleteCategorie, GetCat
 const { createArticle, ListArticle, UpdateArticle, DeleteArticle, getArticleById, getArticleByUserId, getArticleBestseller } = require('../Controller/ARTICLES');
 const { CreateHistoryResearch, ListResearchHistory } = require('../Controller/RESEARCH');
 const { createPromotion, ListPromotion, UpdatePromotion, DeletePromotion, getPromotionByUserId } = require('../Controller/PROMOTION');
+const { CreateOrder, getOrder, getOderByIdUser, getOderByOwner, VerifyOrderPayment, OrderDelivered, CancelOrderAfterDay, CancelOrderByUser, DeleteOrderByUser, DeleteCancelledOrderAfterDay} =require('../Controller/ORDER')
 
 
 
@@ -50,6 +51,19 @@ exports.router = (()=>{
     ToggleRouter.route('/Promotion/GetPromotionByUserId/:id').get(getPromotionByUserId)
     ToggleRouter.route('/Promotion/UpdatePromotion').put(UpdatePromotion.file, UpdatePromotion.request)
     ToggleRouter.route('/Promotion/DeletePromotion/:idCategory/:id/:idPicture').delete(DeletePromotion)
+
+    //ORDERS
+
+    ToggleRouter.route('/Orders/CreateOrder/').post(CreateOrder)
+    ToggleRouter.route('/Orders/ListOrder/').get(getOrder)
+    ToggleRouter.route('/Orders/getOrderById/:id').get(getOderByIdUser)
+    ToggleRouter.route('/Orders/getOrderByOwner/:id').get(getOderByOwner)
+    ToggleRouter.route('/Orders/VerifyUserPayment/:id').get(VerifyOrderPayment)
+    ToggleRouter.route('/Orders/DeliveryOrder/:id').get(OrderDelivered)
+    ToggleRouter.route('/Orders/CancelOrderAfterDay/:id').get(CancelOrderAfterDay)
+    ToggleRouter.route('/Orders/CancelOrderByUser/:id/:customerId').get(CancelOrderByUser)
+    ToggleRouter.route('/Orders/DeleteOrderByUser/:id/:customerId').delete(DeleteOrderByUser)
+    ToggleRouter.route('/Orders/DeleteCancelledOrderAfterDay/:id').delete(DeleteCancelledOrderAfterDay)
 
 
 

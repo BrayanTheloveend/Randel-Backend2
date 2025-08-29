@@ -2,11 +2,17 @@ const mongoose = require('mongoose')
 
 const systemScheme = new mongoose.Schema({
 
-    amount: {
+    message: Array,
+    earn:{
         type: Number,
         default: 0
     },
-    password: String
+    solded: Number,
+    password: String,
+    availableAmount: {
+        type: Number,
+        default: 0
+    },
 
 },{collection: 'systems'});
 module.exports = mongoose.models.systems ||   mongoose.model('systems', systemScheme);

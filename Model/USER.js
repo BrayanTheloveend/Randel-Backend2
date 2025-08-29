@@ -19,7 +19,9 @@ const userSchema = new mongoose.Schema({
         required: false,
         default: false
     },
+    delivreryAddress: String,
     picture: String,
+    message: Array,
     statut: Boolean,
     CodeOtp: String,
     role: {
@@ -40,6 +42,10 @@ const userSchema = new mongoose.Schema({
     facebook: String,
     tiktok: String,
     history: Array,
+    spent: {type: Number, default: 0},
+    availableAmount: {type: Number, default: 0},
+    createdAt: Date,
+    buy: {type: Number, default: 0},
     country: {type: String, default: 'Cameroun'},
     city: {type: String, default: 'Yaoundé'},
     refreshToken: String,

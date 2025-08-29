@@ -41,6 +41,8 @@ module.exports ={
                 idCategory: idCategory,
                 name: name,
                 price: price,
+                likes: [],
+                discount: false,
                 owner: owner,
                 provider: provider,
                 country: country,
@@ -190,6 +192,30 @@ module.exports ={
             }
             res.status(200).json(ArticleBestSeller)
         }).catch(err=>res.status(409).json({'message': err}))
-     }
+    },
+
+    userLikedArticle: async (req, res)=>{
+        const { userId, idArticle,idCategory } = req.body
+        const Category = await Categorie.findOne({'_id': idCategory})
+        const user = await USER.findOne({'_id': userId})
+        if(Category && user){
+            const article = Category.article.find(article => article._id === idArticle);
+            if(article) {
+                if(article.likes && article.likes.includes(userId)){
+                    return res.status(200).json({'message': 'Article deja liked'})
+                }else{
+                    await Categorie.updateOne({'_id': idCategory, 'article': {$elemMatch: {'_id': idArticle}}}, {$pull: {'article.$.likes': userId}})
+                    return res.status(200).json({'message': 'Article liked'})
+                }
+            } else {
+                return res.status(404).json({'message': 'Article not found'});
+            }
+        }
+        return res.status(404).json({'message': 'User or Category not found'});
+    },
+
+
+    
+
 
 }

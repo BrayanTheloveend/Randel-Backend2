@@ -2,20 +2,22 @@ const mongoose = require('mongoose')
 
 const OrderSchema = new mongoose.Schema({
 
-    email: {
-        type: String,
-        required: true
-    },
-    name: {
-        type: String,
-        required: true
-    },
-    surname: {
-        type: String,
-        required: true
-    },
+    amount: Number,
+    customerId: String,
     order: Array,
+    code: String,
+    name: String,
+    delivreryAddress: String,
+    phone: String,
     picture: String,
+    verify: {
+        type: Boolean,
+        default: false
+    },
+    statut: {
+        type: String,
+        default: 'En attente'
+    },
 
 
 },{collection: 'orders'});
