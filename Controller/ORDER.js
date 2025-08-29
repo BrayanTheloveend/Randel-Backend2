@@ -6,6 +6,7 @@ const { sendMailWithAttachment, sendMailCustomerTransaction, sendMailConfirmTran
 
 
 
+let date = Date.now()
 
 module.exports =  {
 
@@ -35,17 +36,17 @@ module.exports =  {
                         statut: 'En attente',
                         order: array,
                         amount: req.body.amount,
-                        createdAt: Date.now()
+                        createdAt: date
                     }).then(async()=>{
                         let message = `Bonjour je m'appélle ${user._doc.name}, j'ai effectué une commande sur CamerShop. Voici mon code de commande: ${code}. Montant total (avec frais 5%): ${req.body.amount + (req.body.amount * 0.05)} FCFA.Je vous enverrai sous peu la capture de paiment. Merci de me confirmer la réception de ce message.`
                         //envoyé un mail pour initier le paiement du client 
                         const placeholder = {
                             name: user._doc.name,
                             code: code,
-                            amount: req.body.amount + (req.body.total * 0.05),
+                            amount: req.body.amount + (req.body.amount * 0.05),
                             order: array,
                             picture: `https://lh3.googleusercontent.com/d/${user._doc.picture?.split('_id').pop().split('.')[0]}`,
-                            date: Date.now(),
+                            date: date,
                             email: user._doc.email,
                             phone: req.body.phone,
                             whatsappPrefilledMessage: encodeURIComponent(message)
@@ -230,10 +231,16 @@ module.exports =  {
         .catch(err=>res.status(409).json({'message': err}))
     },
 
-    DeleteOrderByUser : (req, res)=>{
-        Order.deleteOne({'_id': req.params.id, 'customerId': req.params.customerId, 'statut': 'Annulée' || 'Livrée' })
-        .then(()=> res.status(200).json({'message': 'Commande supprimée'}))
-        .catch(err=>res.status(409).json({'message': err}))
+    DeleteOrderByUser : async(req, res)=>{
+        const order = await Order.findOne({'_id': req.params.id, 'customerId': req.params.customerId})
+        if(order.statut === 'En cours de livraison'){
+            return res.status(409).json({'message': 'Vous ne pouvez pas supprimer cette commande'})
+        }else{    
+            Order.deleteOne({'_id': req.params.id, 'customerId': req.params.customerId, 'verify': 'false' })
+            .then(()=> res.status(200).json({'message': 'Commande supprimée'}))
+            .catch(err=>res.status(409).json({'message': err}))
+        }
+
     }
 
 

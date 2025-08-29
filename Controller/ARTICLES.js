@@ -52,7 +52,7 @@ module.exports ={
                 build: build,
                 stock: stock,
                 description: description,
-                createdAt: Date.now()
+                createdAt: date
             }}
         }).then(()=>res.status(200).json({'message': 'Article crée avec success'}))
         .catch(err=>res.status(409).json({'message': 'Cant fetch data target'}))

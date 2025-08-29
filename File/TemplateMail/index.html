@@ -352,16 +352,16 @@ ul.social li{
             	<tr>
             		<td style="padding: 0 1.8em; padding-bottom: 1em;">
             			<div>
-							<p style="font-family: Inter; color: #000; font-size: 16px; text-align: center;">Designation</p>
-            				<hr>
+							<p style="font-family: Inter; margin-bottom: 4px; padding: 0 2em; color: #000; font-size: 17px; font-weight: 600; text-transform: uppercase; text-align: center; background-color: #eec82c;">Designation</p>
+            				
 							{{#each order }}
-								<div style="display: flex; justify-content: space-between; align-items: center; padding: 0 1em;">
-									<p style="font-family: Inter; color: #000; font-size: 16px;">{{quantity}} {{ name }}</p>
-									<p style="font-family: Inter; color: #000; font-size: 16px; font-weight: 500;">{{ multiply price quantity }} FCFA</p>
+								<div style="display: flex; justify-content: space-between; align-items: center; padding: 0 0.5em;">
+									<p style="font-family: Inter; color: #000; padding: 0; font-size: 16px;">{{quantity}} {{ name }}</p>
+									<p style="font-family: Inter; color: #000; padding: 0; font-size: 16px; font-weight: 500;">{{ multiply price quantity }} FCFA</p>
 								</div>
 							{{/each}}
 							<hr>
-							<div style="display: flex; justify-content: space-between; align-items: center; padding: 0 1em; margin-top: 10px;">
+							<div style="display: flex; justify-content: space-between; align-items: center; padding: 0 1em">
 								<p style="font-family: Inter; color: #000; font-size: 16px; font-weight: 700;">Total (avec frais 5%)</p>
 								<p style="font-family: Inter; color: #000; font-size: 16px; font-weight: 700;">{{ amount }} FCFA</p>
 							</div>
