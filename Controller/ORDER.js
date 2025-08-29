@@ -38,12 +38,13 @@ module.exports =  {
                         amount: req.body.amount,
                         createdAt: date
                     }).then(async()=>{
-                        let message = `Bonjour je m'appélle ${user._doc.name}, j'ai effectué une commande sur CamerShop. Voici mon code de commande: ${code}. Montant total (avec frais 5%): ${req.body.amount + (req.body.amount * 0.05)} FCFA.Je vous enverrai sous peu la capture de paiment. Merci de me confirmer la réception de ce message.`
+                        let total = req.body.amount + (req.body.amount * 0.05)
+                        let message = `Bonjour je m'appélle ${user._doc.name}, j'ai effectué une commande sur CamerShop. Voici mon code de commande: ${code}. Montant total (avec frais 5%): ${total} FCFA.Je vous enverrai sous peu la capture de paiment. Merci de me confirmer la réception de ce message.`
                         //envoyé un mail pour initier le paiement du client 
                         const placeholder = {
                             name: user._doc.name,
                             code: code,
-                            amount: req.body.amount + (req.body.amount * 0.05),
+                            amount: total,
                             order: array,
                             picture: `https://lh3.googleusercontent.com/d/${user._doc.picture?.split('_id').pop().split('.')[0]}`,
                             date: date,
