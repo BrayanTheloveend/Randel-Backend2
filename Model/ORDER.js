@@ -18,6 +18,7 @@ const OrderSchema = new mongoose.Schema({
         type: String,
         default: 'En attente'
     },
+    createdAt: Date
 
 
 },{collection: 'orders'});

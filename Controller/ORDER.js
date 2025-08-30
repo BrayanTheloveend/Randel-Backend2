@@ -3,6 +3,7 @@ const Order = require('../Model/ORDER');
 const System = require('../Model/SYSTEM');
 const { codeGenerator } = require('../Middleware/UTILS');
 const { sendMailWithAttachment, sendMailCustomerTransaction, sendMailConfirmTransaction  } = require('../Middleware/SENDMAIL');
+const CATEGORIE = require('../Model/CATEGORIE');
 
 
 
@@ -75,8 +76,33 @@ module.exports =  {
     },
 
     getOderByIdUser: (req, res)=>{   
-        Order.find({'customerId': req.params.id}).sort({ createdAt: -1 })
-        .then(data=> res.status(200).json(data))
+        User.findOne({'_id': req.params.id})
+        .then(async data=> {
+            if(data?.role === 'Client'){
+                const fetchOrder = await Order.find({'customerId': req.params.id}).sort({ createdAt: -1 })
+                return res.status(200).json(fetchOrder)
+
+            }else if(data?.role === 'Vendeur'){
+                let ArrayOrder = []
+                Order.find({'verify': true}).sort({ createdAt: -1 })
+                .then(data=>{
+                    if(data.length !== 0){
+                        for(let i = 0; i < data.length; i++){
+                            for(let j = 0; j < data[i].order.length; j++){
+                                if(data[i].order[j].owner === req.params.id){
+                                    ArrayOrder.push({...data[i], order: {...data[i].order[j]}})
+                                }
+                            }
+                        }
+                    }
+                    return res.status(200).json(ArrayOrder)
+                }).catch(err=>res.status(409).json({'message': err}))
+
+            }else{
+                const fetchOrder = await Order.find({}).sort({ createdAt: -1 })
+                return res.status(200).json(fetchOrder)
+            }
+        })
         .catch(err=>res.status(409).json({'message': err}))
     },
 
@@ -113,13 +139,39 @@ module.exports =  {
                 .then(system=>{
                     if(system){
                         System.updateOne({}, {$inc: {'earn': found.amount * 0.05}})
-                        .then(()=>res.status(200).json({'message': 'Paiement vérifié'}))
+                        .then(async()=>{
+                            let ArrayOrder = found._doc.order
+                            console.log(ArrayOrder)
+                            for(let i = 0; i < ArrayOrder.length; i++){
+                                await CATEGORIE.updateOne({'_id': ArrayOrder[i].idCategory, 'article': {$elemMatch: {'_id': ArrayOrder[i]._id}}}, 
+                                    {$push: {
+                                        comments : {
+                                            '_id': ArrayOrder[i]._id
+                                        }
+                                    }}
+                                )
+                            }
+                            return res.status(200).json({'message': 'Paiement vérifié'})
+                        })
                         .catch(err=>res.status(409).json({'message': err}))
                     }else{
                         System.create({
                             earn: found.amount * 0.05,
                             createdAt: Date.now()
-                        }).then(()=>{})
+                        }).then(async()=>{
+                            let ArrayOrder = found._doc.order
+                            console.log(ArrayOrder)
+                            for(let i = 0; i < ArrayOrder.length; i++){
+                                await CATEGORIE.updateOne({'_id': ArrayOrder[i].idCategory, 'article': {$elemMatch: {'_id': ArrayOrder[i]._id}}}, 
+                                    {$push: {
+                                        comments : {
+                                            '_id': ArrayOrder[i]._id
+                                        }
+                                    }}
+                                )
+                            }
+                            return res.status(200).json({'message': 'Paiement vérifié'})
+                        })
                         .catch(err=>res.status(409).json({'message': err}))
                     }
                 })
@@ -136,7 +188,7 @@ module.exports =  {
         let message =(name)=> {
             return {
                 title: 'Notification de vente',
-                body: `Vous avez reçu une commande. Article: ${name}`,
+                body: `Vous avez effectué une commande. Article: ${name}`,
                 createdAt: Date.now()
             }
         } 
@@ -151,7 +203,7 @@ module.exports =  {
                     let totalQuantity = 0
                     for(let i = 0; i < data.order.length; i++){
                         totalQuantity += data.order[i].quantity
-                        await User.updateOne({'_id': data.order[i].owner}, {$inc: {account: data.order[i].price * data.order[i].quantity, solded: data.order[i].quantity, availableAmount:  data.order[i].price * data.order[i] * 0.05 }, 'message': message(data.order[i].name)})
+                        await User.updateOne({'_id': data.order[i].owner}, {$inc: {account: data.order[i].price * data.order[i].quantity, earnMark:  data.order[i].price * data.order[i].quantity, solded: data.order[i].quantity, availableAmount:  data.order[i].price * data.order[i] * 0.05 }, 'message': message(data.order[i].name)})
                         .then(()=>{})
                         .catch(err=>res.status(409).json({'message': err}))
                     }

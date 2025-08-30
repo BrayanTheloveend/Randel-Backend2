@@ -37,7 +37,7 @@ const userSchema = new mongoose.Schema({
     shopName: String,
     account: {type: Number, default: 0},
     solded: {type: Number, default: 0},
-    posted: {type: Number, default: 0},
+    earnMark: {type: Number, default: 0},
     phone: String,
     facebook: String,
     tiktok: String,

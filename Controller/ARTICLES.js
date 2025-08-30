@@ -196,7 +196,7 @@ module.exports ={
 
     userLikedArticle: async (req, res)=>{
         const { userId, idArticle,idCategory } = req.body
-        const Category = await Categorie.findOne({'_id': idCategory})
+        const Category = await Categorie.findOne({'_id': idCategory})           
         const user = await USER.findOne({'_id': userId})
         if(Category && user){
             const article = Category.article.find(article => article._id === idArticle);
@@ -213,6 +213,19 @@ module.exports ={
         }
         return res.status(404).json({'message': 'User or Category not found'});
     },
+
+    getOwnerByIdArticle: async(req, res)=>{
+        const Category = await Categorie.findOne({'_id': req.params.idCategory, 'article': {$elemMatch: {'_id': req.params.id}}}) 
+        let article = Category?.article?.filter(elt=> elt._id === req.params.id)
+        console.log(article)
+
+        if(article){
+            USER.findOne({'_id': article[0].owner})
+            .then(data=> res.status(200).json(data))
+        }else{
+            return res.status(404).json({'message': 'Article not found'})
+        }
+    }
 
 
     
