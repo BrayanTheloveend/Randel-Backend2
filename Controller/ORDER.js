@@ -39,7 +39,7 @@ module.exports =  {
                         amount: req.body.amount,
                         createdAt: date
                     }).then(async()=>{
-                        let total = req.body.amount + (req.body.amount * 0.05)
+                        let total = req.body.amount + (req.body.amount * 0.025)
                         let message = `Bonjour je m'appélle ${user._doc.name}, j'ai effectué une commande sur CamerShop. Voici mon code de commande: ${code}. Montant total (avec frais 5%): ${total} FCFA.Je vous enverrai sous peu la capture de paiment. Merci de me confirmer la réception de ce message.`
                         //envoyé un mail pour initier le paiement du client 
                         const placeholder = {
@@ -138,7 +138,7 @@ module.exports =  {
                 System.find({})
                 .then(system=>{
                     if(system){
-                        System.updateOne({}, {$inc: {'earn': found.amount * 0.05}})
+                        System.updateOne({}, {$inc: {'earn': found.amount * 0.025, soldedAmount: found.amount}})
                         .then(async()=>{
                             let ArrayOrder = found._doc.order
                             console.log(ArrayOrder)
@@ -201,13 +201,30 @@ module.exports =  {
             .then(async data=>{
                 if(data){
                     let totalQuantity = 0
+                    let totalEarn = 0
                     for(let i = 0; i < data.order.length; i++){
                         totalQuantity += data.order[i].quantity
-                        await User.updateOne({'_id': data.order[i].owner}, {$inc: {account: data.order[i].price * data.order[i].quantity, earnMark:  data.order[i].price * data.order[i].quantity, solded: data.order[i].quantity, availableAmount:  data.order[i].price * data.order[i] * 0.05 }, 'message': message(data.order[i].name)})
+                        let totalTemp = data.order[i].price * data.order[i].quantity
+                        totalEarn += totalTemp
+                        await User.updateOne({'_id': data.order[i].owner}, {$inc: {account: totalTemp, earnMark:  totalTemp, solded: data.order[i].quantity, availableAmount:  totalTemp - totalTemp * 0.025 }, 'message': message(data.order[i].name)})
                         .then(()=>{})
                         .catch(err=>res.status(409).json({'message': err}))
                     }
                     const user = await User.updateOne({'_id': data.customerId}, {$inc: {spent: data.amount + data.amount * 0.05, bought: totalQuantity }})
+                    .then(()=>
+                        System.find({}).then(()=>{
+                            if(foundSystem){
+                                System.updateOne({'_id': foundSystem[0]._id}, {earn: totalEarn})
+                                .catch(err=>res.status(409).json({'message': err}))
+                            }else{
+                                System.create({
+                                    earn: found.amount * 0.05,
+                                    createdAt: Date.now()
+                                }).catch(err=>res.status(409).json({'message': err}))
+                            }
+                        }).catch(err=>res.status(409).json({'message': err}))
+                    ).catch(err=>res.status(409).json({'message': err}))
+
                     if(user){
                         const isMailSended =  await sendMailConfirmTransaction(user.email, 'Camershop Livraison', { message : 'Votre commande a été livrée avec succès. Merci pour votre confiance et à bientôt sur CamerShop.', name: user.name, title:  'Livraison confirmé', picture: `https://lh3.googleusercontent.com/d/${user.picture?.split('_id').pop().split('.')[0]}`, code: data.code, date: Date.now() })
                         if(isMailSended && isMailSendedtoProvider){
@@ -231,7 +248,7 @@ module.exports =  {
         //cancel after 2 days 
         Order.findOne({'customerId': req.params.id, 'statut': 'En attente'})
         .then(data=>{
-            if(data.createdAt + (2 * 24 * 60 * 60 * 1000) < Date.now() && data.statut === 'En attente'){
+            if(new Date(new Date(data.createdAt).getMilliseconds()).getMilliseconds() + (2 * 24 * 60 * 60 * 1000) < Date.now() && data.statut === 'En attente'){
                 Order.updateMany({'customerId': req.params.id, 'statut': 'En attente'}, {
                     statut: 'Annulée'
                 })
@@ -275,7 +292,7 @@ module.exports =  {
         //delete after 5 days 
         Order.findOne({'customerId': req.params.id, 'statut': 'Annulée'})
         .then(data=>{
-            if(data.createdAt + (5 * 24 * 60 * 60 * 1000) < Date.now()){
+            if(new Date(data.createdAt).getMilliseconds() + (5 * 24 * 60 * 60 * 1000) < Date.now()){
                 Order.deleteMany({'customerId': req.params.id, 'statut': 'Annulée'})
                 .then(()=>res.status(200).json({'message': 'Commande supprimée'}))
                 .catch(err=>res.status(409).json({'message': err}))
@@ -294,7 +311,36 @@ module.exports =  {
             .catch(err=>res.status(409).json({'message': err}))
         }
 
-    }
+    },
+    
+    AdminDeleteOrder: (req, res)=>{
+        Order.findOne({'_id': req.params.id}).then(data=>{
+            if(data){
+                if(data.statut === 'En cours de livraison'){
+                    return res.status(409).json({'message': 'Vous ne pouvez pas supprimer cette commande'})
+                }else{    
+                    data.deleteOne({'_id': req.params.id, 'verify': 'false' })
+                    .then(()=> {
+                        User.updateOne({'_id': req.params.customerId}, {$push : {'message': 
+                            {
+                                title: 'Suppression',
+                                body: `Votre commande a été supprimer en raison de inachévement.`,
+                                createdAt: Date.now()
+                            }
+                        }})
+                        .then(()=> res.status(200).json({'message': 'Commande Supprimmé'}))
+                        .catch(err=>res.status(409).json({'message': err}))
+                    })
+                    .catch(err=>res.status(409).json({'message': err}))
+                }
+            }else{
+                return res.status(404).json({'message': 'no found'})
+            }
+        })
+       
+        
+
+    },
 
 
 

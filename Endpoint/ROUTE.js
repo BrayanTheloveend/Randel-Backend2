@@ -5,7 +5,9 @@ const { ReadCategorie, createCategorie, UpdateCategorie, DeleteCategorie, GetCat
 const { createArticle, ListArticle, UpdateArticle, DeleteArticle, getArticleById, getArticleByUserId, getArticleBestseller, getOwnerByIdArticle, userLikedArticle } = require('../Controller/ARTICLES');
 const { CreateHistoryResearch, ListResearchHistory } = require('../Controller/RESEARCH');
 const { createPromotion, ListPromotion, UpdatePromotion, DeletePromotion, getPromotionByUserId } = require('../Controller/PROMOTION');
-const { CreateOrder, getOrder, getOderByIdUser, getOderByOwner, VerifyOrderPayment, OrderDelivered, CancelOrderAfterDay, CancelOrderByUser, DeleteOrderByUser, DeleteCancelledOrderAfterDay} =require('../Controller/ORDER')
+const { CreateOrder, getOrder, getOderByIdUser, getOderByOwner, VerifyOrderPayment, OrderDelivered, CancelOrderAfterDay, CancelOrderByUser, DeleteOrderByUser, DeleteCancelledOrderAfterDay, AdminDeleteOrder} =require('../Controller/ORDER');
+const { getAllOrder, getSystem } = require('../Controller/SYSTEM');
+const { getWidthdrawRequest, ApprovWithdraw, getWithdrawRequestByIdOwner } = require('../Controller/WITHDRAW');
 
 
 
@@ -70,6 +72,25 @@ exports.router = (()=>{
     ToggleRouter.route('/Orders/CancelOrderByUser/:id/:customerId').get(CancelOrderByUser)
     ToggleRouter.route('/Orders/DeleteOrderByUser/:id/:customerId').delete(DeleteOrderByUser)
     ToggleRouter.route('/Orders/DeleteCancelledOrderAfterDay/:id').delete(DeleteCancelledOrderAfterDay)
+        //ADMIN DELETE ORDERS
+    
+    ToggleRouter.route('/Orders/AdminDeleteOrder/:id/:customerId').delete(AdminDeleteOrder)
+    
+
+
+    //SYSTEM
+
+    ToggleRouter.route('/System/getAllOrder').get(getAllOrder)
+    ToggleRouter.route('/System/getSystemData').get(getSystem)
+
+    //WITHDRAW
+
+    ToggleRouter.route('/withdraw/getWithdrawRequest').get(getWidthdrawRequest)
+    ToggleRouter.route('/withdraw/getWithdrawRequestByOwner/:id').get(getWithdrawRequestByIdOwner)
+    ToggleRouter.route('/withdraw/approvWithdrawRequest').get(ApprovWithdraw)
+    ToggleRouter.route('/withdraw/deleteWithdrawRequestAfterDay').get(ApprovWithdraw)
+
+
 
 
 
