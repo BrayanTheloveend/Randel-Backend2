@@ -3,6 +3,8 @@ const multer = require('multer');
 const { v4: uuidv4 } = require('uuid');
 const { uploadFile, deleteFile } = require('../Googlecloud/DRIVE');
 const USER = require('../Model/USER');
+const RESEARCH = require('./RESEARCH');
+const RESEARCHED = require('../Model/RESEARCHED');
 require('dotenv').config()
 // const emailOptions = require('../handlebars')
 // const jwt = require('../Middleware/JWT')
@@ -129,8 +131,10 @@ module.exports ={
          Categorie.updateOne({'_id': req.params.idCategory}, { $pull: { 'article': { _id: req.params.id } } })
          .then(async()=>{
             await deleteFile(req.params.idPicture).then(()=>{
-                console.log('File deleted from Google Drive')
-                return res.status(200).json({'message': 'Article Supprimé avec success'})
+                RESEARCHED.deleteOne({'name': req.body.name})
+                .then(()=> res.status(200).json({'message': 'Article Supprimé avec success'}))
+                .catch(err=>res.status(409).json({'message': err}))
+                return 
             }).catch(err=>console.log(err))
         })
          .catch(err=>res.status(409).json({'message': err}))
