@@ -26,15 +26,15 @@ module.exports={
         ],(found)=>{
             console.log(found)
             if(found){
-                if(found.statut==0){
+                if(!found.statut){
                     return res.status(201).json({
                         data: {
                             role: found.role,
                             _id: found._id
                         },
-                        message: 'Votre Compte n\'as pas été activée , Verifier votre Courriel'
+                        message: 'Votre compte n\'est pas activer , Verifier votre Courriel'
                     })
-                }else if(found.statut==1){
+                }else if(found.statut && !found.blocked){
                     bcrypt.compare(password, found.password, (errBycrypt, resBycrypt)=>{
                         if(resBycrypt){
                             let token = jwt.generateTokenUser(found)

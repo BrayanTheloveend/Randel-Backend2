@@ -195,29 +195,35 @@ module.exports ={
     },
 
     userLikedArticle: async (req, res)=>{
-        const { userId, idArticle,idCategory } = req.body
+        const { userId, idArticle, idCategory } = req.params
         const Category = await Categorie.findOne({'_id': idCategory})           
         const user = await USER.findOne({'_id': userId})
         if(Category && user){
             const article = Category.article.find(article => article._id === idArticle);
             if(article) {
                 if(article.likes && article.likes.includes(userId)){
-                    return res.status(200).json({'message': 'Article deja liked'})
+
+                    await Categorie.updateOne({'_id': idCategory, 'article': {$elemMatch: {'_id': idArticle}} }, {
+                        $pull: {'article.$.likes': userId}
+                    })
+                    .then(()=> res.status(200).json({'message': 'Article  unliked'}))
+                    .catch(err=>res.status(409).json({'message': err}))
                 }else{
-                    await Categorie.updateOne({'_id': idCategory, 'article': {$elemMatch: {'_id': idArticle}}}, {$pull: {'article.$.likes': userId}})
-                    return res.status(200).json({'message': 'Article liked'})
+                    await Categorie.updateOne({'_id': idCategory, 'article': {$elemMatch: {'_id': idArticle}}}, {$push: {'article.$.likes':  userId }})
+                    .then(()=> res.status(200).json({'message': 'Article liked'}))
+                    .catch(err=>res.status(409).json({'message': err}))
                 }
             } else {
                 return res.status(404).json({'message': 'Article not found'});
             }
+        }else{
+            return res.status(404).json({'message': 'User or Category not found'});
         }
-        return res.status(404).json({'message': 'User or Category not found'});
     },
 
     getOwnerByIdArticle: async(req, res)=>{
         const Category = await Categorie.findOne({'_id': req.params.idCategory, 'article': {$elemMatch: {'_id': req.params.id}}}) 
         let article = Category?.article?.filter(elt=> elt._id === req.params.id)
-        console.log(article)
 
         if(article){
             USER.findOne({'_id': article[0].owner})

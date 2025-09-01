@@ -1,8 +1,8 @@
 const express = require('express');
-const { CreateUser, getUser, getUserById, updateUser } = require('../Controller/USER');
+const { CreateUser, getUser, getUserById, updateUser, ChangeUserStatus } = require('../Controller/USER');
 const { Login, getGoogleValidation } = require('../Controller/AUTH');
 const { ReadCategorie, createCategorie, UpdateCategorie, DeleteCategorie, GetCategoryById } = require('../Controller/CATEGORIE');
-const { createArticle, ListArticle, UpdateArticle, DeleteArticle, getArticleById, getArticleByUserId, getArticleBestseller, getOwnerByIdArticle } = require('../Controller/ARTICLES');
+const { createArticle, ListArticle, UpdateArticle, DeleteArticle, getArticleById, getArticleByUserId, getArticleBestseller, getOwnerByIdArticle, userLikedArticle } = require('../Controller/ARTICLES');
 const { CreateHistoryResearch, ListResearchHistory } = require('../Controller/RESEARCH');
 const { createPromotion, ListPromotion, UpdatePromotion, DeletePromotion, getPromotionByUserId } = require('../Controller/PROMOTION');
 const { CreateOrder, getOrder, getOderByIdUser, getOderByOwner, VerifyOrderPayment, OrderDelivered, CancelOrderAfterDay, CancelOrderByUser, DeleteOrderByUser, DeleteCancelledOrderAfterDay} =require('../Controller/ORDER')
@@ -17,10 +17,12 @@ exports.router = (()=>{
     //API ENDPOINTS
     ToggleRouter.route('/Users/CreateUser').post(CreateUser.file, CreateUser.request)
     ToggleRouter.route('/Users/UpdateUser').put(updateUser)
+    ToggleRouter.route('/Users/ChangeUserStatut/:id').put(ChangeUserStatus)
     ToggleRouter.route('/Users/getUser').get(getUser)
     ToggleRouter.route('/Users/getUserById/:id').get(getUserById)
     ToggleRouter.route('/Auth/Login').post(Login)
     ToggleRouter.route('/oauth2callback').get(getGoogleValidation)
+
 
     //CATEGORIES
     ToggleRouter.route('/Categorie/getCategorie').get(ReadCategorie)
@@ -39,6 +41,7 @@ exports.router = (()=>{
     ToggleRouter.route('/Articles/GetArticleOfEachCategory').get(getArticleBestseller)
     ToggleRouter.route('/Articles/GetArticleByUserId/:id').get(getArticleByUserId)
     ToggleRouter.route('/Articles/UpdateArticle').put(UpdateArticle.file, UpdateArticle.request)
+    ToggleRouter.route('/Articles/UserLikeArticle/:idCategory/:idArticle/:userId').put(userLikedArticle)
     ToggleRouter.route('/Articles/DeleteArticle/:idCategory/:id/:idPicture').delete(DeleteArticle)
 
 
