@@ -39,7 +39,7 @@ module.exports =  {
                         amount: req.body.amount,
                         createdAt: date
                     }).then(async()=>{
-                        let total = req.body.amount + (req.body.amount * 0.025)
+                        let total = req.body.amount + (req.body.amount * 0.25)
                         let message = `Bonjour je m'appélle ${user._doc.name}, j'ai effectué une commande sur CamerShop. Voici mon code de commande: ${code}. Montant total (avec frais 5%): ${total} FCFA.Je vous enverrai sous peu la capture de paiment. Merci de me confirmer la réception de ce message.`
                         //envoyé un mail pour initier le paiement du client 
                         const placeholder = {
@@ -138,7 +138,7 @@ module.exports =  {
                 System.find({})
                 .then(system=>{
                     if(system){
-                        System.updateOne({}, {$inc: {'earn': found.amount * 0.025, soldedAmount: found.amount}})
+                        System.updateOne({}, {$inc: {'earn': found.amount * 0.25, soldedAmount: found.amount}})
                         .then(async()=>{
                             let ArrayOrder = found._doc.order
                             console.log(ArrayOrder)
@@ -156,7 +156,8 @@ module.exports =  {
                         .catch(err=>res.status(409).json({'message': err}))
                     }else{
                         System.create({
-                            earn: found.amount * 0.05,
+                            earn: found.amount * 0.25,
+                            soldedAmount: found.amount,
                             createdAt: Date.now()
                         }).then(async()=>{
                             let ArrayOrder = found._doc.order
@@ -206,19 +207,20 @@ module.exports =  {
                         totalQuantity += data.order[i].quantity
                         let totalTemp = data.order[i].price * data.order[i].quantity
                         totalEarn += totalTemp
-                        await User.updateOne({'_id': data.order[i].owner}, {$inc: {account: totalTemp, earnMark:  totalTemp, solded: data.order[i].quantity, availableAmount:  totalTemp - totalTemp * 0.025 }, 'message': message(data.order[i].name)})
+                        await User.updateOne({'_id': data.order[i].owner}, {$inc: {account: totalTemp, earnMark:  totalTemp, solded: data.order[i].quantity, availableAmount:  totalTemp - totalTemp * 0.25 }, 'message': message(data.order[i].name)})
                         .then(()=>{})
                         .catch(err=>res.status(409).json({'message': err}))
                     }
-                    const user = await User.updateOne({'_id': data.customerId}, {$inc: {spent: data.amount + data.amount * 0.05, bought: totalQuantity }})
+                    const user = await User.updateOne({'_id': data.customerId}, {$inc: {spent: data.amount + data.amount * 0.25, bought: totalQuantity }})
                     .then(()=>
                         System.find({}).then(()=>{
                             if(foundSystem){
-                                System.updateOne({'_id': foundSystem[0]._id}, {earn: totalEarn})
+                                System.updateOne({'_id': foundSystem[0]._id}, {earn: totalEarn  * 0.25, soldedAmount: totalEarn})
                                 .catch(err=>res.status(409).json({'message': err}))
                             }else{
                                 System.create({
-                                    earn: found.amount * 0.05,
+                                    earn: found.amount * 0.25,
+                                    soldedAmount: totalEarn,
                                     createdAt: Date.now()
                                 }).catch(err=>res.status(409).json({'message': err}))
                             }

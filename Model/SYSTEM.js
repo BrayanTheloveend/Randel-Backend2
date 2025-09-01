@@ -9,7 +9,7 @@ const systemScheme = new mongoose.Schema({
     },
     solded: Number,
     password: String,
-    availableAmount: {
+    soldedAmount: {
         type: Number,
         default: 0
     },
