@@ -123,7 +123,7 @@ module.exports = {
 
     getUser: async (req, res)=>{
         try {
-            await User.find({})
+            await User.find({'role': { $ne: 'Admin' }})
             .then(users => res.status(200).json(users))
         } catch (error) {
             res.status(404).json({'message': error.message })

@@ -70,7 +70,7 @@ exports.router = (()=>{
     ToggleRouter.route('/Orders/ListOrder/').get(getOrder)
     ToggleRouter.route('/Orders/getOrderById/:id').get(getOderByIdUser)
     ToggleRouter.route('/Orders/getOrderByOwner/:id').get(getOderByOwner)
-    ToggleRouter.route('/Orders/VerifyUserPayment/:id').get(VerifyOrderPayment)
+    ToggleRouter.route('/Orders/VerifyUserPayment/:id').put(VerifyOrderPayment)
     ToggleRouter.route('/Orders/DeliveryOrder/:id').get(OrderDelivered)
     ToggleRouter.route('/Orders/CancelOrderAfterDay/:id').get(CancelOrderAfterDay)
     ToggleRouter.route('/Orders/CancelOrderByUser/:id/:customerId').get(CancelOrderByUser)

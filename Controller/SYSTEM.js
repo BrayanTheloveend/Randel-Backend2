@@ -14,10 +14,10 @@ module.exports={
         SYSTEM.find({})
         .then(data=> {
             if(data){
-                USER.find({})
+                USER.find({'role': { $ne: 'Admin' }})
                 .then(found=>{
                     console.log(found)
-                    return res.status(200).json({...data, users: [...found]})
+                    return res.status(200).json({...data[0]._doc, users: [...found]})
                 })
                 .catch(err=> res.status(409).json({'message': err}))
             }
