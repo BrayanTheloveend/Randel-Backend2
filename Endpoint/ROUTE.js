@@ -1,6 +1,6 @@
 const express = require('express');
-const { CreateUser, getUser, getUserById, updateUser, ChangeUserStatus } = require('../Controller/USER');
-const { Login, getGoogleValidation } = require('../Controller/AUTH');
+const { CreateUser, getUser, getUserById, updateUser, ChangeUserStatus, deleteUserById } = require('../Controller/USER');
+const { Login, getGoogleValidation, AuthentificationByMail } = require('../Controller/AUTH');
 const { ReadCategorie, createCategorie, UpdateCategorie, DeleteCategorie, GetCategoryById } = require('../Controller/CATEGORIE');
 const { createArticle, ListArticle, UpdateArticle, DeleteArticle, getArticleById, getArticleByUserId, getArticleBestseller, getOwnerByIdArticle, userLikedArticle } = require('../Controller/ARTICLES');
 const { CreateHistoryResearch, ListResearchHistory } = require('../Controller/RESEARCH');
@@ -21,9 +21,13 @@ exports.router = (()=>{
     ToggleRouter.route('/Users/UpdateUser').put(updateUser)
     ToggleRouter.route('/Users/ChangeUserStatut/:id').put(ChangeUserStatus)
     ToggleRouter.route('/Users/getUser').get(getUser)
+    ToggleRouter.route('/Users/deleteUserById/:id').delete(deleteUserById)
     ToggleRouter.route('/Users/getUserById/:id').get(getUserById)
     ToggleRouter.route('/Auth/Login').post(Login)
+    ToggleRouter.route('/Auth/Users/:email').get(AuthentificationByMail)
     ToggleRouter.route('/oauth2callback').get(getGoogleValidation)
+
+
 
 
     //CATEGORIES

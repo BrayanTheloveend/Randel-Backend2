@@ -67,6 +67,25 @@ module.exports={
         return res.sendFile()
     },
 
+    AuthentificationByMail: (req, res)=>{
+        User.findOne({'email': req.email})
+        .then(found=>{
+            if(found){
+                User.updateOne({'email': req.email},{'statut': true})
+                .then(()=>{
+                    let token = jwt.generateTokenUser(found)
+                    res.cookie('accessToken', token, { maxAge: 900000, httpOnly: true })
+                    return res.status(200).json({
+                        ...found._doc,
+                        token: token,
+                    })
+                })
+            }else{
+                return res.status(404).json({ "message": "Ce compte n'existe pas."})
+            }
+        }).catch(err => res.status(500).json({'message': err }))
+    }
+
     
 
 }

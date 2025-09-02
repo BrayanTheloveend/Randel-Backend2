@@ -163,7 +163,7 @@ module.exports ={
                 for (let i = 0; i < data.length; i++) {
                     if(data[i].article.length > 0){
                         for (let j = 0; j < data[i].article.length; j++) {
-                            if(data[i].article[j]?.owner === req.params.id && data[i].article[j]?.discount !== true){
+                            if(data[i].article[j]?.owner === req.params.id && (data[i].article[j]?.discount !== true)){
                                 articleSet.push({...data[i].article[j], categoryName: data[i].name})
                             }
                         }

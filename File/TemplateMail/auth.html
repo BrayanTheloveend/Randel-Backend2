@@ -320,13 +320,10 @@ ul.social li{
 					
           			<td style="text-align: left;">
 			            <a href="https://randel-business-entreprise.onrender.com/" target="_blank">
-							<img src='https://raw.githubusercontent.com/BrayanTheloveend/Schoolaris-forntend/c7662a13ac9f76fd4c82e323db0ddd16bcbc5038/src/assets/hostLogo.png' style="width: 80px;" alt="logo Camershop"/>
+							<img src='https://raw.githubusercontent.com/BrayanTheloveend/Schoolaris-forntend/c7662a13ac9f76fd4c82e323db0ddd16bcbc5038/src/assets/hostLogo.png' style="width: 50px;" alt="logo Camershop"/>
 						</a>
 			        </td>
-					<td style="text-align: right; display: flex; align-items: end; justify-content: end; width: 100%;">
-						<img src="{{ picture }}" style="width: 42px; height: 42px; border-radius: 100%;" alt="user picture" />
-						</div>
-					</td>
+					
 				</tr>
           	</table>
           </td>
@@ -334,48 +331,28 @@ ul.social li{
 				
 		
 		<tr>
-          <td class="hero bg_white" style="padding: 2em 0 4em 0;">
+          <td class="hero bg_white" >
             <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
             	<tr>
-            		<td style="padding: 0 2.5em; padding-bottom: 1em;">
+            		<td style="padding: 0 1.8em; padding-bottom: 1em;">
             			<div class="text">
             				<!-- <h1 style="font-family: Onest; font-weight: 700; text-align: center;">
-								{{ title }}
+								Finalisez votre commande
 							</h1> -->
 							<p style="font-family: Inter; color: #000; font-size: 16px;">
-								Salut {{ name }},<br>
-								{{ message }}
+								Salut <strong>{{ name }},</strong><br>
+								Vous avez reçu cet e-mail suite à votre inscription sur notre site. Veuillez cliquer sur le lien ci-dessous pour activer votre compte. Si vous n'êtes pas à l'origine de cette demande, vous pouvez ignorer ce message.
 							</p>
+
+							<div style="display: flex; align-items: center; gap: 10px; margin: 18px 0; justify-content: center;">
+								<a class="button primary" href="https://randel-business-entreprise.onrender.com/{{ email }}" >oui c'est moi</a> 
+							</div>
+							<a ></a>
+
             			</div>
-						<h2 style="font-family: Onest; font-weight: 700; text-align: center; margin-top: 2em; color: #eec82c;">
-							{{ code }}
-						</h2>
             		</td>
             	</tr>
-            
-				<tr>
-					<td style="padding: 0 2.5em; padding-bottom: 3em;">
-						<div style="font-family: Inter; color: #000; font-size: 14px">
-							Vous serez livre dans les <strong>24 heures</strong> qui suivent la confirmation de votre payement,
-							passez ce delais, n'hesitez pas a nous contacter via notre numéro de Service <strong>+237 676588528</strong> ou a vous rendre directement a notre siége social situé a
-							<strong>Yaoundé ° Carrefour sorcier ° En face de Doww Total Yanick</strong>
-							<br/><br/>
-							<Strong style="text-decoration: underline;">Important:</Strong><br/>
-							Une fois votre colis reçu, il est promordiale de marquer la commande comme "Livrée" sur votre compte client, afin d'eviter tout désagrement.
-						
-							<br><br>
-							Cordialement, 
-							<strong> L'equipe Camershop.</strong>
-						</div>
-
-					</td>
-					
-				</tr>
-
-				
-            </table>
-          </td>
-	      </tr><!-- end tr -->
+            	<!-- end tr -->
       <!-- 1 Column Text + Button : END -->
       </table>
       <table align="center" role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin: auto;">

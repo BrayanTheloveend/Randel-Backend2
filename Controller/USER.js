@@ -4,6 +4,7 @@ const multer = require('multer')
 const nodemailer = require('nodemailer');
 const { uploadFile } = require('../Googlecloud/DRIVE');
 const CATEGORIE = require('../Model/CATEGORIE');
+const { sendMailAuth } = require('../Middleware/SENDMAIL');
 require('dotenv').config()
 // const emailOptions = require('../handlebars')
 // const jwt = require('../Middleware/JWT')
@@ -74,28 +75,19 @@ module.exports = {
                                     surname: surname,
                                     shopName: surname,
                                     role: role,
-                                    statut: 1,
+                                    statut: false,
                                     picture: `${file.data.name}_id${file.data.id}` ,
                                     password: bcryptedPassword,
                                 })
-                                .then(()=> res.status(201).json({"message": 'compte crée avec success '}) )
-                                    
-                                //    const transport = transporter.sendMail(emailOptions(email, 'Code de Verification', OTP))
-                                //     .then(()=>{
-                                //         return res.status(200).json({
-                                //             'message': "vous avez reçu un code de verification a l'adresse e-mail ✅" + email
-                                //         })
-                                //     })
-                                //     .catch(err=>{
-                                //         return res.status(404).json({
-                                //             'message': 'verifier votre connexion internet'
-                                //         })
-                                //     })
-                                            
-                                // )
-            
-                                //DO NOT FORGET TO SEND A EMAIL TO Admin
-                                .catch(err=> res.status(500).json({'message': err}))
+                                .then(async ()=>{
+                                    const isMailSended =  await sendMailAuth(email, 'Authentification', { name: name, email: email })
+                                    if(isMailSended){
+                                        return res.status(200).json({'message':'Compte enregistré'})
+                                    }else{
+                                        return res.status(409).json({'message': 'Erreur lors de l\'envoi du mail'})
+                                    }
+                                })
+                                 .catch(err=> res.status(500).json({'message': err}))
                             })
                         }).catch(err=> res.status(409).json({'message': err}))
 
@@ -107,12 +99,19 @@ module.exports = {
                                 surname: surname,
                                 shopName: surname,
                                 role: role,
-                                statut: 1,
+                                statut: false,
                                 picture: `__nopicture__` ,
                                 password: bcryptedPassword,
                             })
-                            .then(()=> res.status(201).json({"message": 'compte crée avec success '}))
-                            .catch(err=> res.status(409).json({'message': err}))
+                            .then(async ()=>{
+                                const isMailSended =  await sendMailAuth(email, 'Authentification', { name: name, email: email })
+                                if(isMailSended){
+                                    return res.status(200).json({'message':'Compte enregistré'})
+                                }else{
+                                    return res.status(409).json({'message': 'Erreur lors de l\'envoi du mail'})
+                                }
+                            })
+                            .catch(err=> res.status(500).json({'message': err}))
                         })
                     } 
                 }
@@ -192,6 +191,12 @@ module.exports = {
                 return res.status(404).json({'message': 'User not found'})
             }
         }).catch(err=> res.status(500).json({'message': err}))
+    },
+
+    deleteUserById: (req, res)=>{
+        User.deleteOne({'_id': req.params.id})
+        .then(()=> res.status(200).json({'message': 'Successfully deleted'}))
+        .catch(err=> res.status(500).json({'message': err}))
     }
 
 

@@ -6,7 +6,8 @@ const handlebars = require('handlebars')
 // Charger et compiler le template Handlebars
 const template = handlebars.compile(fs.readFileSync('./File/TemplateMail/index.html', 'utf-8').toString())
 const templateUserMail = handlebars.compile(fs.readFileSync('./File/TemplateMail/email.html', 'utf-8').toString())
-const templateValidation = handlebars.compile(fs.readFileSync('./File/TemplateMail/confirm.html', 'utf-8').toString())
+const templateConfirm = handlebars.compile(fs.readFileSync('./File/TemplateMail/confirm.html', 'utf-8').toString())
+const templateAuth = handlebars.compile(fs.readFileSync('./File/TemplateMail/auth.html', 'utf-8').toString())
 
 handlebars.registerHelper('multiply', function(a, b) {
   return a * b;
@@ -19,6 +20,10 @@ const htmlToSenduserMail = (data)=> {
 }
 const htmlToSendconfirm = (data)=> {
   return templateConfirm(data)
+
+}
+const htmlToSendAuth = (data)=> {
+  return templateAuth(data)
 }
 
 // Fonction d'envoi d'email avec pièce jointe
@@ -113,9 +118,39 @@ async function sendMailConfirmTransaction(destEmail, title, userData) {
     }
 }
 
+async function sendMailAuth(destEmail, title, userData) {
+    // Créez un transporteur SMTP (exemple avec Gmail, à adapter selon votre config)
+    let transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: process.env.MAIL_USER, // Votre email
+            pass: process.env.MAIL_PASS  // Votre mot de passe ou app password
+        }
+    });
+
+    // Définir le contenu du mail
+    let mailOptions = {
+        from: process.env.MAIL_USER,
+        to: destEmail,
+        subject: title,
+        // text: `Bonjour ${userData.name},\n\nVeuillez trouver le fichier en pièce jointe.\n\nCordialement.`,
+        html: htmlToSendAuth(userData),
+    };
+
+    // Envoyer le mail
+    try {
+        let info = await transporter.sendMail(mailOptions);
+        console.log('Email envoyé: ' + info.response);
+        return true;
+    } catch (error) {
+        console.error('Erreur lors de l\'envoi de l\'email:', error);
+        return false;
+    }
+}
+
 
 
 // Exemple d'utilisation :
 // sendMailWithAttachment('destinataire@email.com', './chemin/vers/fichier.pdf', {name: 'Brayan'});
 
-module.exports = { sendMailWithAttachment, sendMailCustomerTransaction, sendMailConfirmTransaction };
+module.exports = { sendMailWithAttachment, sendMailCustomerTransaction, sendMailConfirmTransaction, sendMailAuth };
