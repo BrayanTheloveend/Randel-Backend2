@@ -26,7 +26,7 @@ module.exports={
     },
 
     getAllOrder: (req, res)=>{
-        ORDER.find({}).sort({ createdAt: -1 })
+        ORDER.find({'statut': {$ne: 'Livrée'}}).sort({ createdAt: -1 })
         .then(data=> res.status(200).json(data))
         .catch(err=> res.status(409).json({'message': err}))
     },

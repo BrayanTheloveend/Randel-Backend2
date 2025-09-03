@@ -198,7 +198,7 @@ module.exports =  {
         let message =(name)=> {
             return {
                 title: 'Notification de vente',
-                body: `Vous avez effectué une commande. Article: ${name}`,
+                body: `Vous avez effectué une Venter. Article: ${name}`,
                 createdAt: Date.now()
             }
         } 
@@ -220,32 +220,60 @@ module.exports =  {
                         .then(()=>{})
                         .catch(err=>res.status(409).json({'message': err}))
                     }
-                    const user = await User.updateOne({'_id': data.customerId}, {$inc: {spent: data.amount + data.amount * 0.025, bought: totalQuantity }})
+                    const updateUser = await User.updateOne({'_id': data.customerId}, {$inc: {spent: data.amount + data.amount * 0.025, bought: totalQuantity }})
                     .then(()=>
                         System.find({}).then(()=>{
                             if(foundSystem){
-                                System.updateOne({'_id': foundSystem[0]._id}, {earn: totalEarn  * 0.025, soldedAmount: totalEarn})
+                                System.updateOne({'_id': foundSystem[0]._id},{ $inc : {earn: totalEarn  * 0.025}})
+                                .then(()=>{
+                                    User.findOne({'_id': data.customerId})
+                                    .then(async(user)=>{
+                                        if(user){
+                                            const isMailSended =  await sendMailConfirmTransaction(user.email, 'Camershop Livraison', { message : 'Votre commande a été livrée avec succès. Merci pour votre confiance et à bientôt sur CamerShop.', name: user.name, title:  'Livraison confirmé', picture: `https://lh3.googleusercontent.com/d/${user.picture?.split('_id').pop().split('.')[0]}`, code: data.code, date: Date.now() })
+                                            //isMailSendedtoProvider
+                                            if(isMailSended ){
+
+                                                return res.status(200).json({'message':'Livraison confirmé'})
+                                            }else{
+
+                                                return res.status(409).json({'message': 'Erreur lors de l\'envoi du mail'})
+                                            }
+                                        }else{
+                                            return res.status(404).json({'message': 'User not found'})
+                                        }
+                                    })
+                                    
+                                })
                                 .catch(err=>res.status(409).json({'message': err}))
                             }else{
                                 System.create({
-                                    earn: found.amount * 0.025,
+                                    earn: totalEarn * 0.025,
                                     soldedAmount: totalEarn,
                                     createdAt: Date.now()
-                                }).catch(err=>res.status(409).json({'message': err}))
+                                }).then(()=>{
+                                    User.findOne({'_id': data.customerId})
+                                    .then(async(user)=>{
+                                        if(user){
+                                            const isMailSended =  await sendMailConfirmTransaction(user.email, 'Camershop Livraison', { message : 'Votre commande a été livrée avec succès. Merci pour votre confiance et à bientôt sur CamerShop.', name: user.name, title:  'Livraison confirmé', picture: `https://lh3.googleusercontent.com/d/${user.picture?.split('_id').pop().split('.')[0]}`, code: data.code, date: Date.now() })
+                                            //isMailSendedtoProvider
+                                            if(isMailSended ){
+
+                                                return res.status(200).json({'message':'Livraison confirmé'})
+                                            }else{
+
+                                                return res.status(409).json({'message': 'Erreur lors de l\'envoi du mail'})
+                                            }
+                                        }else{
+                                            return res.status(404).json({'message': 'User not found'})
+                                        }
+                                    })
+                                })
+                                .catch(err=>res.status(409).json({'message': err}))
                             }
+
                         }).catch(err=>res.status(409).json({'message': err}))
                     ).catch(err=>res.status(409).json({'message': err}))
 
-                    if(user){
-                        const isMailSended =  await sendMailConfirmTransaction(user.email, 'Camershop Livraison', { message : 'Votre commande a été livrée avec succès. Merci pour votre confiance et à bientôt sur CamerShop.', name: user.name, title:  'Livraison confirmé', picture: `https://lh3.googleusercontent.com/d/${user.picture?.split('_id').pop().split('.')[0]}`, code: data.code, date: Date.now() })
-                        if(isMailSended && isMailSendedtoProvider){
-                           return res.status(200).json({'message':'Livraison confirmé'})
-                        }else{
-                            return res.status(409).json({'message': 'Erreur lors de l\'envoi du mail'})
-                        }
-                    }
-                    //envoyé un mail pour signaler le vendeur
-                    return res.status(200).json({'message': 'Commande livrée'})
                 }else{
                     return res.status(409).json({'message': 'Commande introuvable'})
                 }
