@@ -7,7 +7,7 @@ module.exports={
 
     generateTokenUser: (userData)=>{
         return jwt.sign({
-            _id: userData._id,
+            userId: userData.userId.toString(),
             role: userData.role
         },
         process.env.JWT_SIGN_SECRET, {
@@ -20,13 +20,15 @@ module.exports={
     },
 
     getUserId: (authorization)=>{
-        let _id =  -1
+        let userId =  -1
         const token = module.exports.parseAuthorization(authorization)
         if(token != null){
             try{
-                let jwtToken = jwt.verify(token, JWT_SIGN_SECRET)
+                let jwtToken = jwt.verify(token,  process.env.JWT_SIGN_SECRET)
                 if(jwtToken != null){
-                    return _id = jwtToken._id
+                    return userId = jwtToken.userId
+                }else{
+                    console.log('error')
                 }
             }
             catch (err){

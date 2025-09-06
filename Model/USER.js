@@ -45,7 +45,7 @@ const userSchema = new mongoose.Schema({
     spent: {type: Number, default: 0},
     availableAmount: {type: Number, default: 0},
     createdAt: Date,
-    buy: {type: Number, default: 0},
+    bought: {type: Number, default: 0},
     country: {type: String, default: 'Cameroun'},
     city: {type: String, default: 'Yaoundé'},
     refreshToken: String,

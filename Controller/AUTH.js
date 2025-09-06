@@ -37,7 +37,7 @@ module.exports={
                 }else if(found.statut && !found.blocked){
                     bcrypt.compare(password, found.password, (errBycrypt, resBycrypt)=>{
                         if(resBycrypt){
-                            let token = jwt.generateTokenUser(found)
+                            let token = jwt.generateTokenUser({userId: found._id, role: found.role})
                             res.cookie('accessToken', token, { maxAge: 900000, httpOnly: true })
                             return res.status(200).json({
                                 ...found._doc,

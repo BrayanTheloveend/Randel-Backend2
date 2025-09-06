@@ -198,7 +198,7 @@ module.exports =  {
         let message =(name)=> {
             return {
                 title: 'Notification de vente',
-                body: `Vous avez effectué une Venter. Article: ${name}`,
+                body: `Vous avez effectué une Vente. Article: ${name}`,
                 createdAt: Date.now()
             }
         } 
@@ -222,9 +222,12 @@ module.exports =  {
                     }
                     const updateUser = await User.updateOne({'_id': data.customerId}, {$inc: {spent: data.amount + data.amount * 0.025, bought: totalQuantity }})
                     .then(()=>
-                        System.find({}).then(()=>{
+                        System.find({})
+                        .then(foundSystem=>{
+                            console.log(foundSystem)
                             if(foundSystem){
-                                System.updateOne({'_id': foundSystem[0]._id},{ $inc : {earn: totalEarn  * 0.025}})
+                                console.log(foundSystem)
+                                System.updateOne({'_id': foundSystem[0]._id},{ $inc : {earn: totalEarn  * 0.025}, soldedAmount: totalEarn,})
                                 .then(()=>{
                                     User.findOne({'_id': data.customerId})
                                     .then(async(user)=>{

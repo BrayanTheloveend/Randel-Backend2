@@ -7,7 +7,7 @@ const CATEGORIE = require('../Model/CATEGORIE');
 const { sendMailAuth } = require('../Middleware/SENDMAIL');
 require('dotenv').config()
 // const emailOptions = require('../handlebars')
-// const jwt = require('../Middleware/JWT')
+const jwt = require('../Middleware/JWT')
 
 //Upload File
 
@@ -150,6 +150,18 @@ module.exports = {
     }, 
 
     getUserById : async (req, res)=>{
+
+        //Getting auth header
+
+        const headerAuth = req.headers.authorization
+        const userId = jwt.getUserId(headerAuth)
+
+        if(!userId || userId < 0){
+            return res.status(401).json({
+                'message': 'UnAuthorized'
+            })
+        } 
+
         const userArticle = []
         const Category = await CATEGORIE.find({})
         User.findOne({'_id': req.params.id})

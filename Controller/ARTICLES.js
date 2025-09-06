@@ -47,6 +47,7 @@ module.exports ={
                 discount: false,
                 owner: owner,
                 provider: provider,
+                comments: [],
                 country: country,
                 skill: skill,
                 picture: `${file.data.name}_id${file.data.id}`,
@@ -235,7 +236,9 @@ module.exports ={
         }else{
             return res.status(404).json({'message': 'Article not found'})
         }
-    }
+    },
+
+
 
 
     
