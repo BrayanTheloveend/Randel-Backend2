@@ -46,7 +46,7 @@ module.exports =  {
                         amount: req.body.amount,
                         createdAt: date
                     }).then(async()=>{
-                        let total = req.body.amount + (req.body.amount * 0.025)
+                        let total = req.body.amount + (req.body.amount * 0.015)
                         let message = `Bonjour je m'appélle ${user._doc.name}, j'ai effectué une commande sur CamerShop. Voici mon code de commande: ${code}. Montant total (avec frais 5%): ${total} FCFA.Je vous enverrai sous peu la capture de paiment. Merci de me confirmer la réception de ce message.`
                         //envoyé un mail pour initier le paiement du client 
                         const placeholder = {
@@ -146,7 +146,7 @@ module.exports =  {
                 .then(systemFound=>{
                     console.log(systemFound)
                     if(systemFound){
-                        System.updateOne({'_id': systemFound[0]._id}, {$inc: {'earn': found.amount * 0.025, soldedAmount: found.amount, solded: found.totalArticle}})
+                        System.updateOne({'_id': systemFound[0]._id}, {$inc: {'earn': found.amount * 0.015, soldedAmount: found.amount, solded: found.totalArticle}})
                         .then(async()=>{
                             let ArrayOrder = found._doc.order
                             console.log(ArrayOrder)
@@ -164,7 +164,7 @@ module.exports =  {
                         .catch(err=>res.status(409).json({'message': err}))
                     }else{
                         System.create({
-                            earn: found.amount * 0.025,
+                            earn: found.amount * 0.015,
                             soldedAmount: found.amount,
                             solded: found.totalArticle,
                             createdAt: Date.now()
@@ -216,18 +216,18 @@ module.exports =  {
                         totalQuantity += data.order[i].quantity
                         let totalTemp = data.order[i].price * data.order[i].quantity
                         totalEarn += totalTemp
-                        await User.updateOne({'_id': data.order[i].owner}, {$inc: {account: totalTemp, earnMark:  totalTemp, solded: data.order[i].quantity, availableAmount:  totalTemp - totalTemp * 0.025 }, 'message': message(data.order[i].name)})
+                        await User.updateOne({'_id': data.order[i].owner}, {$inc: {account: totalTemp, earnMark:  totalTemp, solded: data.order[i].quantity, availableAmount:  totalTemp - totalTemp * 0.015 }, 'message': message(data.order[i].name)})
                         .then(()=>{})
                         .catch(err=>res.status(409).json({'message': err}))
                     }
-                    const updateUser = await User.updateOne({'_id': data.customerId}, {$inc: {spent: data.amount + data.amount * 0.025, bought: totalQuantity }})
+                    const updateUser = await User.updateOne({'_id': data.customerId}, {$inc: {spent: data.amount + data.amount * 0.015, bought: totalQuantity }})
                     .then(()=>
                         System.find({})
                         .then(foundSystem=>{
                             console.log(foundSystem)
                             if(foundSystem){
                                 console.log(foundSystem)
-                                System.updateOne({'_id': foundSystem[0]._id},{ $inc : {earn: totalEarn  * 0.025}, soldedAmount: totalEarn,})
+                                System.updateOne({'_id': foundSystem[0]._id},{ $inc : {earn: totalEarn  * 0.015}, soldedAmount: totalEarn,})
                                 .then(()=>{
                                     User.findOne({'_id': data.customerId})
                                     .then(async(user)=>{
@@ -250,7 +250,7 @@ module.exports =  {
                                 .catch(err=>res.status(409).json({'message': err}))
                             }else{
                                 System.create({
-                                    earn: totalEarn * 0.025,
+                                    earn: totalEarn * 0.015,
                                     soldedAmount: totalEarn,
                                     createdAt: Date.now()
                                 }).then(()=>{
