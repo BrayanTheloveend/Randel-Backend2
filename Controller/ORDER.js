@@ -345,13 +345,21 @@ module.exports =  {
 
     DeleteOrderByUser : async(req, res)=>{
         const order = await Order.findOne({'_id': req.params.id, 'customerId': req.params.customerId})
-        if(order.statut === 'En cours de livraison'){
-            return res.status(409).json({'message': 'Vous ne pouvez pas supprimer cette commande'})
-        }else{    
-            Order.deleteOne({'_id': req.params.id, 'customerId': req.params.customerId, 'verify': 'false' })
-            .then(()=> res.status(200).json({'message': 'Commande supprimée'}))
-            .catch(err=>res.status(409).json({'message': err}))
-        }
+        .then(data=>{
+            if(data){
+                if(data.statut === 'En cours de livraison'){
+                    return res.status(409).json({'message': 'Vous ne pouvez pas supprimer cette commande'})
+                }else{    
+                    Order.deleteOne({'_id': req.params.id, 'customerId': req.params.customerId, 'verify': 'false' })
+                    .then(()=> res.status(200).json({'message': 'Commande supprimée'}))
+                    .catch(err=>res.status(409).json({'message': err}))
+                }
+            }else{
+                return res.status(404).json({'message': 'data not found'})
+
+            }
+            
+        }).catch(err=>res.status(409).json({'message': err}))
 
     },
     
