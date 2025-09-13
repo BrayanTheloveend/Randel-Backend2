@@ -220,7 +220,7 @@ module.exports =  {
                         .then(()=>{})
                         .catch(err=>res.status(409).json({'message': err}))
                     }
-                    const updateUser = await User.updateOne({'_id': data.customerId}, {$inc: {spent: data.amount + data.amount * 0.015, bought: totalQuantity }})
+                    await User.updateOne({'_id': data.customerId}, {$inc: {spent: data.amount + data.amount * 0.015, bought: totalQuantity }})
                     .then(()=>
                         System.find({})
                         .then(foundSystem=>{

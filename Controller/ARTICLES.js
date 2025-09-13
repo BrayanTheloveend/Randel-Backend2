@@ -227,15 +227,21 @@ module.exports ={
     },
 
     getOwnerByIdArticle: async(req, res)=>{
-        const Category = await Categorie.findOne({'_id': req.params.idCategory, 'article': {$elemMatch: {'_id': req.params.id}}}) 
-        let article = Category?.article?.filter(elt=> elt._id === req.params.id)
-
-        if(article){
-            USER.findOne({'_id': article[0].owner})
-            .then(data=> res.status(200).json(data))
+        
+        if( req.params.idCategory &&  req.params.id){
+            return res.status(404).json({'message': 'missing parameters'})
         }else{
-            return res.status(404).json({'message': 'Article not found'})
+            const Category = await Categorie.findOne({'_id': req.params.idCategory, 'article': {$elemMatch: {'_id': req.params.id}}}) 
+            let article = Category?.article?.filter(elt=> elt._id === req.params.id)
+
+            if(article){
+                USER.findOne({'_id': article[0].owner})
+                .then(data=> res.status(200).json(data))
+            }else{
+                return res.status(404).json({'message': 'Article not found'})
+            }
         }
+       
     },
 
 
